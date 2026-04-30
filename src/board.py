@@ -85,3 +85,11 @@ class TicTacToe:
             self.game_over = True
             print("Draw")
             return
+        
+    def legal_moves(self):
+        all_legal_moves = []
+        for r in range(self.SIZE):
+            for c in range(self.SIZE):
+                if self.board[r][c] == 0:
+                    all_legal_moves.append((r, c))
+        return all_legal_moves
