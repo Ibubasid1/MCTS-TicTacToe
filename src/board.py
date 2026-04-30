@@ -19,6 +19,7 @@ class TicTacToe:
         self.moves += 1
 
         self.current_player = 2 if self.current_player == 1 else 1
+        self.check_win()
         return True
   
        
@@ -93,3 +94,25 @@ class TicTacToe:
                 if self.board[r][c] == 0:
                     all_legal_moves.append((r, c))
         return all_legal_moves
+    
+    def __str__(self):
+        symbols = {0: " ", 1: "X", 2: "O"}
+        rows = []
+        for row in self.board:
+            rows.append(" " + " | ".join(symbols[cell] for cell in row) + " ")
+        return "\n-----------\n".join(rows)
+
+
+
+def main():
+    game = TicTacToe()
+    game.place(0, 0)
+    game.place(0, 1)
+    game.place(1, 1)
+    game.place(0, 2)
+    game.place(2, 2)
+    print(game)
+
+
+if __name__ == "__main__":
+    main()
