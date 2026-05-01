@@ -4,13 +4,14 @@ import math
 
 class _Node:
     
-    def __init__(self, board, piece, parent=None): #board is state, piece is turn
+    def __init__(self, board, piece, action=None, parent=None): #board is state, piece is turn
         self.current_state = board
         self.piece = piece
         self.visits = 0 #visits for current node, starts at zero
         self.total_value = 0
         self.children = [] #children stored as empty list. nodes can have either none or as many as they'd like
         self.parent = parent #pointer to parent node, sole purpose of calculating total visits. wait a sec, that's not necessary
+        self.action = action
 
         self.total_visits = self.visits
         if parent:
@@ -26,6 +27,10 @@ class MCTS:
         self.current_state = board
         self.piece = piece
         self.root_node = _Node(self.current_state, self.piece)
+        
+    def random_move(self):
+        possible_moves = self.board.legal_moves
+        self.board.place(random.choice(possible_moves))
 
     def calculate(self, node: "_Node", constant) -> float: #we're assuming 'node' will contain all the necessary values for the calculation # returns UCB1 value for a given node
         average_value = node.total_value / node.visits
@@ -44,3 +49,6 @@ class MCTS:
                     max == self.calculate(element, 2)
                     max_node = element
             return self.select(max_node)
+        
+
+            
