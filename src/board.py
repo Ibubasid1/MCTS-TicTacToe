@@ -21,6 +21,72 @@ class TicTacToe:
         self.current_player = 2 if self.current_player == 1 else 1
         self.check_win()
         return True
+    
+    def is_terminal(self) -> bool:
+        if self.board[0][0] == self.board[0][1] == self.board[0][2] != 0:
+            return True
+        if self.board[1][0] == self.board[1][1] == self.board[1][2] != 0:
+            return True
+        if self.board[2][0] == self.board[2][1] == self.board[2][2] != 0:
+            return True
+        if self.board[0][0] == self.board[1][0] == self.board[2][0] != 0:
+            return True
+        if self.board[0][1] == self.board[1][1] == self.board[2][1] != 0:
+            return True
+        if self.board[0][2] == self.board[1][2] == self.board[2][2] != 0:
+            return True
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
+            return True
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
+            return True
+        if self.moves == 9:
+            return True
+        return False
+    
+    def get_value(self, piece) -> int:
+        if self.board[0][0] == self.board[0][1] == self.board[0][2] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[1][0] == self.board[1][1] == self.board[1][2] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[2][0] == self.board[2][1] == self.board[2][2] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[0][0] == self.board[1][0] == self.board[2][0] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[0][1] == self.board[1][1] == self.board[2][1] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[0][2] == self.board[1][2] == self.board[2][2] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
+            if self.board[0][0] == piece:
+                return 10
+            else:
+                return 1
+
+        if self.moves == 9:
+            return 5
   
        
     def check_win(self):
