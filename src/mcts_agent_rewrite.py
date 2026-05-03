@@ -20,20 +20,25 @@ class _Node:
         return not self.children\
     
     
-    @property
     def calculate_ucb1_value(self, constant=2) -> float:
         if self.visits == 0:
             return math.inf
         average_value = self.value/self.visits
         return average_value + constant * math.sqrt(math.log(self.parent.visits)/self.visits)
     
-    
-    @property 
+
     def get_best_child(self):
-        max_UCB1_value = -math.inf
+        max_ucb1_value = -math.inf
         chosen_child = None
+        
         for child in self.children:
-            child_UCB1_value = self.calcul
+            child_ucb1_value = self.calculate_ucb1_value
+            
+            if child_ucb1_value > max_ucb1_value:
+                max_ucb1_value = child_ucb1_value
+                chosen_child = child
+        
+        return chosen_child
     
     
     
@@ -45,5 +50,10 @@ class MCTS:
         self.favored_piece = favored_piece
     
     
-
+    def node_selection(self) -> _Node:
+        node = self.root_node
+        while not node.is_leaf:
+            node = node.get_best_child()
+        return node
+            
                         
