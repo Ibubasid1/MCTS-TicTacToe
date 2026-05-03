@@ -13,3 +13,12 @@ class _Node:
         self.children.append(child)
     
     
+class MCTS:
+    
+    
+    def __init__(self, current_board_layout: "TicTacToe", favored_piece):
+        self.root_node = _Node(current_board_layout)
+        self.favored_piece = favored_piece
+        
+    
+    
