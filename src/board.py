@@ -19,7 +19,7 @@ class TicTacToe:
         self.moves += 1
 
         self.current_player = 2 if self.current_player == 1 else 1
-        self.check_win()
+        # self.check_win()
         return True
     
     def is_terminal(self) -> bool:

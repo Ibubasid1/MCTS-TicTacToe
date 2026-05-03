@@ -40,7 +40,7 @@ class MCTS:
 
     def calculate(self, node: "_Node", constant) -> float: #we're assuming 'node' will contain all the necessary values for the calculation # returns UCB1 value for a given node
         if node.visits == 0:
-            return math.inf()
+            return math.inf
         else:
             average_value = node.total_value / node.visits
             # parent_visits = 00 #not sure how to get this yet, have to study tree implementations first
@@ -61,9 +61,12 @@ class MCTS:
         
         
     def node_expansion(self, node: "_Node"):
+        if not node.current_state.legal_moves():
+            return False
         all_possible_actions = node.current_state.legal_moves()
         for single_action in all_possible_actions:
             node.add_child(_Node(node.current_state, node.piece, single_action, node))
+            return True
         
         
     def rollout(self, node: "_Node", piece) -> int:
@@ -72,15 +75,17 @@ class MCTS:
             if node.current_state.is_terminal():
                 return node.current_state.get_value(piece)
             else:
-                return self.rollout(_Node(node.current_state, piece, random.choice(node.current_state.legal_moves()), node))
+                return self.rollout(_Node(node.current_state, piece, random.choice(node.current_state.legal_moves()), node), node.piece)
         else:
             #create new state for every action possible
             #check every possible action and create that many children, each child linked to an action
             #node expansion
-            self.node_expansion(node)
-            #expansion done
-            #after expansion do rollout on random child (all have the same UCB1 value)
-            return self.rollout(random.choice(node.children), piece) #guaranteed to rollout since children are newly created meaning they will have a visits value of 0
+            if self.node_expansion(node):
+                #expansion done
+                #after expansion do rollout on random child (all have the same UCB1 value)
+                return self.rollout(random.choice(node.children), piece) #guaranteed to rollout since children are newly created meaning they will have a visits value of 0
+            else:
+                return 0
     
     def backpropagate(self, node: "_Node"): #main function i think
         value = self.rollout(node, node.piece)
@@ -106,25 +111,37 @@ class MCTS:
         #         max_child = element
         # return max_child
         
-    def driver(self, node: "_Node"):
+    def driver(self):
         start_time = time.time()
-        while time.time() - start_time < 4:
-            chosen_node = node.select()
+        while time.time() - start_time < 1:
+            chosen_node = self.select(self.root_node)
             self.backpropagate(chosen_node)
         
         max = -math.inf
-        best_child = random.choice(node.children)
-        for child in node.children:
+        best_child = random.choice(self.root_node.children)
+        for child in self.root_node.children:
             child_ucb_score = self.calculate(child, 2)
             if child_ucb_score > max:
                 max = child_ucb_score
                 best_child = child
+        
         return best_child.action
+    
                 
                 
         
 def main():
-    pass
+    board = TicTacToe()
+    agent = MCTS(board, board.current_player)
+    while not board.game_over:
+        row, col = input("Position: ").split()
+        board.place(int(row), int(col))
+        print(board)
+        agent = MCTS(board, board.current_player)
+        action_to_take = agent.driver()
+        board.place(action_to_take[0], action_to_take[1])
+        print(board)
+    print("Game over")
       
 if __name__ == "__main__":
     main()
