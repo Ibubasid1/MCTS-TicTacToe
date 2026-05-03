@@ -1,8 +1,8 @@
 from board import TicTacToe
+import copy
 import math
 
 class _Node:
-    
     def __init__(self, current_board_layout: "TicTacToe", parent=None):
         self.current_state = current_board_layout
         self.visits = 0
@@ -17,7 +17,7 @@ class _Node:
     
     @property
     def is_leaf(self) -> bool:
-        return not self.children\
+        return not self.children
     
     
     def calculate_ucb1_value(self, constant=2) -> float:
@@ -30,21 +30,32 @@ class _Node:
     def get_best_child(self):
         max_ucb1_value = -math.inf
         chosen_child = None
-        
         for child in self.children:
             child_ucb1_value = self.calculate_ucb1_value
-            
             if child_ucb1_value > max_ucb1_value:
                 max_ucb1_value = child_ucb1_value
                 chosen_child = child
-        
         return chosen_child
     
     
+    def expand_node(self) -> bool:
+        available_legal_moves = self.current_state.legal_moves()
+        if not available_legal_moves:
+            return False
+        for move in available_legal_moves:
+            new_state = self.simulate_move(self.current_state, move)
+            new_child = _Node(new_state, self)
+            self.children.append(new_child)
+        return True
+    
+    
+    def simulate_move(self, board: "TicTacToe", move: tuple) -> "TicTacToe":
+        board_copy = copy.deepcopy(board)
+        board_copy.place(move[0], move[1])
+        return board_copy
+    
     
 class MCTS:
-    
-    
     def __init__(self, current_board_layout: "TicTacToe", favored_piece):
         self.root_node = _Node(current_board_layout)
         self.favored_piece = favored_piece
@@ -55,5 +66,4 @@ class MCTS:
         while not node.is_leaf:
             node = node.get_best_child()
         return node
-            
                         
