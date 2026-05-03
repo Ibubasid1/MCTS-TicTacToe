@@ -57,13 +57,21 @@ class _Node:
     
 class MCTS:
     def __init__(self, current_board_layout: "TicTacToe", favored_piece):
+        self.board = current_board_layout
         self.root_node = _Node(current_board_layout)
         self.favored_piece = favored_piece
     
     
     def node_selection(self) -> _Node:
         node = self.root_node
+        if not node.visits:
+            return node
+        if not node.children:
+            node.expand_node()
         while not node.is_leaf:
             node = node.get_best_child()
         return node
-                        
+    
+    
+
+              
