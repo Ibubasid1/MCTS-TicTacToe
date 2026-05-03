@@ -1,4 +1,5 @@
 from board import TicTacToe
+import math
 
 class _Node:
     
@@ -9,7 +10,7 @@ class _Node:
         self.parent = parent
         self.children = []
         
-    def add_child(self, child: "_Node"):
+    def add_child(self, child: "_Node") -> None:
         self.children.append(child)
     
     
@@ -21,4 +22,9 @@ class MCTS:
         self.favored_piece = favored_piece
         
     
-    
+    def calculate(self, node: "_Node", constant) -> float:
+        if node.visits == 0:
+            return math.inf
+        average_value = node.value/node.visits
+        parent_visits = node.parent.visits
+        return average_value + constant * math.sqrt(math.log(parent_visits)/node.visits)
