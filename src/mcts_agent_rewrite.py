@@ -2,6 +2,7 @@ from board import TicTacToe
 import copy
 import math
 import random
+import time
 
 class _Node:
     def __init__(self, current_board_layout: "TicTacToe", parent=None):
@@ -60,14 +61,49 @@ class MCTS:
     
     def node_selection(self) -> _Node:
         node = self.root_node
-        if not node.visits:
-            return node
-        if not node.children:
-            node.expand_node()
         while not node.is_leaf:
             node = node.get_best_child()
         return node
     
     
-
-              
+    def simulation(self, node: "_Node"):
+        state = copy.deepcopy(node.current_state)
+        while True:
+            if state.is_terminal():
+                return state.get_value(self.favored_piece)
+            state = state.simulate_move(state.random_move)
+    
+    
+    def backpropagate(self, node: "_Node", value):
+        current_node = node
+        while True:
+            current_node.visits += 1
+            current_node.value += value
+            if not current_node.parent:
+                break
+            current_node = current_node.parent
+            
+    
+ 
+        
+            
+            
+def main():
+    board = TicTacToe()
+    board.place(0, 0)
+    board.place(0, 1)
+    board.place(0, 2)
+    board.place(1, 0)
+    board.place(2, 0)
+    # board.place(1, 1)
+    # board.place(1, 2)
+    # board.place(2, 1)
+    # board.place(2, 2)
+    print(board)
+    print("After MCTS: ")
+    agent = MCTS(board, 1)
+    agent.simulation()
+    # print(agent.simulation())
+    
+if __name__ == "__main__":
+    main()              
