@@ -1,3 +1,6 @@
+import copy
+import random
+
 class TicTacToe:
 
     SIZE = 3
@@ -8,6 +11,7 @@ class TicTacToe:
         self.moves = 0
         self.current_player = 1
         self.game_over = False
+        self.terminal_state = 0
     
 
     def place(self, row, col):
@@ -19,9 +23,81 @@ class TicTacToe:
         self.moves += 1
 
         self.current_player = 2 if self.current_player == 1 else 1
-        self.check_win()
+        # self.check_win()
         return True
+    
+    def is_terminal(self) -> bool:
+        if self.board[0][0] == self.board[0][1] == self.board[0][2] != 0:
+            return True
+        if self.board[1][0] == self.board[1][1] == self.board[1][2] != 0:
+            return True
+        if self.board[2][0] == self.board[2][1] == self.board[2][2] != 0:
+            return True
+        if self.board[0][0] == self.board[1][0] == self.board[2][0] != 0:
+            return True
+        if self.board[0][1] == self.board[1][1] == self.board[2][1] != 0:
+            return True
+        if self.board[0][2] == self.board[1][2] == self.board[2][2] != 0:
+            return True
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
+            return True
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
+            return True
+        if self.moves == 9:
+            return True
+        return False
+    
+    def get_value(self, piece) -> int:
+        if self.board[0][0] == self.board[0][1] == self.board[0][2] != 0:
+            if self.board[0][0] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[1][0] == self.board[1][1] == self.board[1][2] != 0:
+            if self.board[1][0] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[2][0] == self.board[2][1] == self.board[2][2] != 0:
+            if self.board[2][0] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[0][0] == self.board[1][0] == self.board[2][0] != 0:
+            if self.board[0][0] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[0][1] == self.board[1][1] == self.board[2][1] != 0:
+            if self.board[0][1] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[0][2] == self.board[1][2] == self.board[2][2] != 0:
+            if self.board[0][2] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
+            if self.board[0][0] == piece:
+                return 1
+            else:
+                return -1
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
+            if self.board[0][2] == piece:
+                return 1
+            else:
+                return -1
+
+        if self.moves == 9:
+            return 0
   
+  
+    def simulate_move(self, move: tuple):
+        new_board = copy.deepcopy(self)
+        new_board.place(move[0], move[1])
+        return new_board
+    
        
     def check_win(self):
         
@@ -101,6 +177,10 @@ class TicTacToe:
         for row in self.board:
             rows.append(" " + " | ".join(symbols[cell] for cell in row) + " ")
         return "\n-----------\n".join(rows)
+    
+    def random_move(self):
+        random_move = random.choice(self.legal_moves())
+        return random_move
 
 
 
