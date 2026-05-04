@@ -1,3 +1,5 @@
+import copy
+
 class TicTacToe:
 
     SIZE = 3
@@ -8,6 +10,7 @@ class TicTacToe:
         self.moves = 0
         self.current_player = 1
         self.game_over = False
+        self.terminal_state = 0
     
 
     def place(self, row, col):
@@ -50,12 +53,12 @@ class TicTacToe:
             else:
                 return 1
         if self.board[1][0] == self.board[1][1] == self.board[1][2] != 0:
-            if self.board[0][0] == piece:
+            if self.board[1][0] == piece:
                 return 10
             else:
                 return 1
         if self.board[2][0] == self.board[2][1] == self.board[2][2] != 0:
-            if self.board[0][0] == piece:
+            if self.board[2][0] == piece:
                 return 10
             else:
                 return 1
@@ -65,12 +68,12 @@ class TicTacToe:
             else:
                 return 1
         if self.board[0][1] == self.board[1][1] == self.board[2][1] != 0:
-            if self.board[0][0] == piece:
+            if self.board[0][1] == piece:
                 return 10
             else:
                 return 1
         if self.board[0][2] == self.board[1][2] == self.board[2][2] != 0:
-            if self.board[0][0] == piece:
+            if self.board[0][2] == piece:
                 return 10
             else:
                 return 1
@@ -80,7 +83,7 @@ class TicTacToe:
             else:
                 return 1
         if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
-            if self.board[0][0] == piece:
+            if self.board[0][2] == piece:
                 return 10
             else:
                 return 1
@@ -88,6 +91,12 @@ class TicTacToe:
         if self.moves == 9:
             return 5
   
+  
+    def simulate_move(self, move: tuple):
+        new_board = copy.deepcopy(self)
+        new_board.place(move[0], move[1])
+        return new_board
+    
        
     def check_win(self):
         

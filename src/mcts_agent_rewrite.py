@@ -1,6 +1,7 @@
 from board import TicTacToe
 import copy
 import math
+import random
 
 class _Node:
     def __init__(self, current_board_layout: "TicTacToe", parent=None):
@@ -43,17 +44,12 @@ class _Node:
         if not available_legal_moves:
             return False
         for move in available_legal_moves:
-            new_state = self.simulate_move(self.current_state, move)
+            new_state = self.current_state.simulate_move(move)
             new_child = _Node(new_state, self)
             self.children.append(new_child)
         return True
     
-    
-    def simulate_move(self, board: "TicTacToe", move: tuple) -> "TicTacToe":
-        board_copy = copy.deepcopy(board)
-        board_copy.place(move[0], move[1])
-        return board_copy
-    
+        
     
 class MCTS:
     def __init__(self, current_board_layout: "TicTacToe", favored_piece):
