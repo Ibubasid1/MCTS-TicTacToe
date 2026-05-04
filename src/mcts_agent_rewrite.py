@@ -5,11 +5,12 @@ import random
 import time
 
 class _Node:
-    def __init__(self, current_board_layout: "TicTacToe", parent=None):
+    def __init__(self, current_board_layout: "TicTacToe", parent=None, move=None):
         self.current_state = current_board_layout
         self.visits = 0
         self.value = 0
         self.parent = parent
+        self.move = move
         self.children = []
         
         
@@ -23,7 +24,7 @@ class _Node:
     
     
     def calculate_ucb1_value(self, constant=2) -> float:
-        if self.visits == 0:
+        if self.visits == 0 or not self.parent:
             return math.inf
         average_value = self.value/self.visits
         return average_value + constant * math.sqrt(math.log(self.parent.visits)/self.visits)
@@ -33,11 +34,19 @@ class _Node:
         max_ucb1_value = -math.inf
         chosen_child = None
         for child in self.children:
-            child_ucb1_value = self.calculate_ucb1_value
+            child_ucb1_value = self.calculate_ucb1_value()
             if child_ucb1_value > max_ucb1_value:
                 max_ucb1_value = child_ucb1_value
                 chosen_child = child
         return chosen_child
+    
+    
+    def most_loved_child(self):
+        most_visited = random.choice(self.children)
+        for child in self.children:
+            if child.visits > most_visited.visits:
+                most_visited = child
+        return most_visited
     
     
     def expand_node(self) -> bool:
@@ -46,9 +55,9 @@ class _Node:
             return False
         for move in available_legal_moves:
             new_state = self.current_state.simulate_move(move)
-            new_child = _Node(new_state, self)
+            new_child = _Node(new_state, self, move)
             self.children.append(new_child)
-        return True
+        return True      
     
         
     
@@ -71,7 +80,7 @@ class MCTS:
         while True:
             if state.is_terminal():
                 return state.get_value(self.favored_piece)
-            state = state.simulate_move(state.random_move)
+            state = state.simulate_move(state.random_move())
     
     
     def backpropagate(self, node: "_Node", value):
@@ -84,7 +93,18 @@ class MCTS:
             current_node = current_node.parent
             
     
- 
+    def get_best_move(self):
+        current_time = time.time()
+        while time.time() - current_time < 1:
+            node = self.node_selection()
+            if not node.current_state.is_terminal():
+                if node.visits:
+                    node.expand_node()
+                    node = random.choice(node.children) 
+            value = self.simulation(node)
+            self.backpropagate(node, value)
+        most_visited_child = self.root_node.most_loved_child()
+        return most_visited_child.move
         
             
             
@@ -100,10 +120,11 @@ def main():
     # board.place(2, 1)
     # board.place(2, 2)
     print(board)
-    print("After MCTS: ")
     agent = MCTS(board, 1)
-    agent.simulation()
+    move = agent.get_best_move()
+    board.place(move[0], move[1])
     # print(agent.simulation())
+    print(board)
     
 if __name__ == "__main__":
     main()              

@@ -180,7 +180,7 @@ class TicTacToe:
     
     def random_move(self):
         random_move = random.choice(self.legal_moves())
-        return self.place(random_move[0], random_move[1])
+        return random_move
 
 
 
