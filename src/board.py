@@ -1,4 +1,5 @@
 import copy
+import random
 
 class TicTacToe:
 
@@ -176,6 +177,10 @@ class TicTacToe:
         for row in self.board:
             rows.append(" " + " | ".join(symbols[cell] for cell in row) + " ")
         return "\n-----------\n".join(rows)
+    
+    def random_move(self):
+        random_move = random.choice(self.legal_moves())
+        return self.place(random_move[0], random_move[1])
 
 
 
