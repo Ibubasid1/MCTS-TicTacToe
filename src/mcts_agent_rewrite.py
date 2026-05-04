@@ -23,7 +23,7 @@ class _Node:
         return not self.children
     
     
-    def calculate_ucb1_value(self, constant=2) -> float:
+    def calculate_ucb1_value(self, constant = 2) -> float:
         if self.visits == 0 or not self.parent:
             return math.inf
         average_value = self.value/self.visits
@@ -34,7 +34,7 @@ class _Node:
         max_ucb1_value = -math.inf
         chosen_child = None
         for child in self.children:
-            child_ucb1_value = self.calculate_ucb1_value()
+            child_ucb1_value = child.calculate_ucb1_value()
             if child_ucb1_value > max_ucb1_value:
                 max_ucb1_value = child_ucb1_value
                 chosen_child = child
@@ -61,15 +61,8 @@ class _Node:
     
         
     
-class MCTS:
-    def __init__(self, current_board_layout: "TicTacToe", favored_piece):
-        self.board = current_board_layout
-        self.root_node = _Node(current_board_layout)
-        self.favored_piece = favored_piece
-    
-    
-    def node_selection(self) -> _Node:
-        node = self.root_node
+class MCTS:    
+    def node_selection(self, node) -> _Node:
         while not node.is_leaf:
             node = node.get_best_child()
         return node
@@ -77,9 +70,10 @@ class MCTS:
     
     def simulation(self, node: "_Node"):
         state = copy.deepcopy(node.current_state)
+        current_player = 2 if state.current_player == 1 else 1
         while True:
             if state.is_terminal():
-                return state.get_value(self.favored_piece)
+                return state.get_value(current_player)
             state = state.simulate_move(state.random_move())
     
     
@@ -90,41 +84,38 @@ class MCTS:
             current_node.value += value
             if not current_node.parent:
                 break
+            value = -value
             current_node = current_node.parent
             
     
-    def get_best_move(self):
+    def get_best_move(self, current_state):
+        root = _Node(current_state)
         current_time = time.time()
         while time.time() - current_time < 1:
-            node = self.node_selection()
+            node = self.node_selection(root)
             if not node.current_state.is_terminal():
                 if node.visits:
                     node.expand_node()
                     node = random.choice(node.children) 
             value = self.simulation(node)
             self.backpropagate(node, value)
-        most_visited_child = self.root_node.most_loved_child()
+        most_visited_child = root.most_loved_child()
         return most_visited_child.move
         
             
             
 def main():
     board = TicTacToe()
-    board.place(0, 0)
-    board.place(0, 1)
-    board.place(0, 2)
-    board.place(1, 0)
-    board.place(2, 0)
-    # board.place(1, 1)
-    # board.place(1, 2)
-    # board.place(2, 1)
-    # board.place(2, 2)
-    print(board)
-    agent = MCTS(board, 1)
-    move = agent.get_best_move()
-    board.place(move[0], move[1])
-    # print(agent.simulation())
-    print(board)
+    agent = MCTS()
+    agent2 = MCTS()
+    while not board.game_over:
+        move = agent.get_best_move(board)
+        board.place(move[0], move[1])
+        print(board)
+        move = agent2.get_best_move(board)
+        board.place(move[0], move[1])
+        print(board)
     
 if __name__ == "__main__":
     main()              
+    

@@ -50,47 +50,47 @@ class TicTacToe:
     def get_value(self, piece) -> int:
         if self.board[0][0] == self.board[0][1] == self.board[0][2] != 0:
             if self.board[0][0] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[1][0] == self.board[1][1] == self.board[1][2] != 0:
             if self.board[1][0] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[2][0] == self.board[2][1] == self.board[2][2] != 0:
             if self.board[2][0] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[0][0] == self.board[1][0] == self.board[2][0] != 0:
             if self.board[0][0] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[0][1] == self.board[1][1] == self.board[2][1] != 0:
             if self.board[0][1] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[0][2] == self.board[1][2] == self.board[2][2] != 0:
             if self.board[0][2] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
             if self.board[0][0] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
         if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
             if self.board[0][2] == piece:
-                return 10
-            else:
                 return 1
+            else:
+                return -1
 
         if self.moves == 9:
-            return 5
+            return 0
   
   
     def simulate_move(self, move: tuple):
